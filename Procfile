@@ -1,1 +1,1 @@
-web: gunicorn djangoxtravisxwebhook.wsgi --log-file -
+web: gunicorn travis_checker.wsgi --log-file -
