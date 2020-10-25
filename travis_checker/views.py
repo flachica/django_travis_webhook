@@ -16,6 +16,36 @@ from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/tmp/debug.log'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file']
+        }
+    }
+})
 
 class Travis(View):
 
@@ -31,8 +61,10 @@ class Travis(View):
         return super(Travis, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        logger.info('POST Requested')
         signature = self._get_signature(request)
         json_payload = parse_qs(request.body)['payload'][0]
+        logger.info('JSON Parsed')
         try:
             public_key = self._get_travis_public_key()
         except requests.Timeout:
