@@ -79,6 +79,9 @@ class Travis(View):
             # Log the failure somewhere
             return HttpResponseBadRequest({'status': 'unauthorized'})
         json_data = json.loads(json_payload)
+        logger.info('####################')
+        logger.info(json_data)
+        logger.info('####################')
         return JsonResponse({'status': 'received'})
 
     def check_authorized(self, signature, public_key, payload):
