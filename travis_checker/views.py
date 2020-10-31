@@ -63,7 +63,11 @@ class Travis(View):
     def post(self, request, *args, **kwargs):
         logger.info('POST Requested')
         signature = self._get_signature(request)
-        json_payload = parse_qs(request.body)['payload'][0]
+        body_parsed = parse_qs(request.body)
+        logger.info('######## Body parsed ############')
+        logger.info(body_parsed)
+        logger.info('######## End Body parsed ###########')
+        json_payload = body_parsed['payload'][0]
         logger.info('JSON Parsed')
         try:
             public_key = self._get_travis_public_key()
@@ -79,9 +83,9 @@ class Travis(View):
             # Log the failure somewhere
             return HttpResponseBadRequest({'status': 'unauthorized'})
         json_data = json.loads(json_payload)
-        logger.info('####################')
+        logger.info('######## JSON Data ############')
         logger.info(json_data)
-        logger.info('####################')
+        logger.info('######### END JSON Data ###########')
         return JsonResponse({'status': 'received'})
 
     def check_authorized(self, signature, public_key, payload):
